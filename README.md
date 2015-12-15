@@ -1,2 +1,2 @@
 # eontziApp
-eontzia-zmdbls.rhcloud.com
+http://eontzia-zmdbls.rhcloud.com
