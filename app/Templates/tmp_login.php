@@ -33,7 +33,7 @@
 			<?php endif; ?>
 				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4 " id="formularios">
 					<div class="login">						
-						<h2 style="margin-top:0px;">Iniciar sesion</h2>
+						<h2 style="margin-top:0px;">Iniciar sesión</h2>
 						<form class="form-horizontal" action="login" method="post">		
 							<div class="form-group">
 								<label for="txtLogIdUsuario" class="col-sm-3 control-label">Id usuario</label>
@@ -65,7 +65,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-sm-2 col-sm-10">
-									<button class="btn btn-primary" type="submit"  tabindex="4">Iniciar sesion</button>
+									<button class="btn btn-primary" type="submit"  tabindex="4">Iniciar sesión</button>
 								</div>
 							</div>																			
 						</form>					
