@@ -4,13 +4,13 @@
 
 	require 'vendor/autoload.php';
 
-	//Slim\Slim::registerAutoloader();
+	Slim\Slim::registerAutoloader();
 
 	$app= new \Slim\Slim();
 	$app->config(array(
 		'debug' =>true ,
 		'templates.path' =>'Templates'));
-
+	//Raiz de /app
 	$app-> map('/',function() use ($app){
 		
 		if(!isset($_SESSION['id_usuario'])){
@@ -22,5 +22,12 @@
 			$app->redirect($app->urlFor('PaginaInicio'));			
 		}	
 	})->via('GET')->name('Inicio');
+
+	//Registro
+	$app->post('/registro',function(){
+		
+	});
+
+	$app->run();
 
 	?>
