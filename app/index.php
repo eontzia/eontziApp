@@ -98,6 +98,18 @@
 		}
 		$app->render('info.php',array('mensaje'=>$mensaje));
 	})->name('resultado');
+	
+	//****Envio de datos//****
+	$app->get('/nuevaLectura/:disId/:vol/:fuego',function($disId,$vol,$fuego) use($app){
+		require_once 'Modelos/DisDatos.php';
+		$result=DisDatos::nuevaLectura($disId,$vol,$fuego);
+		if ($result==1){
+			echo "Insert OK";
+		}else{
+			echo "Insert KO";
+		}
+
+	});
 
 	$app->run();
 
