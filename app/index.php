@@ -108,14 +108,12 @@
 		}else{
 			echo "Insert KO";
 		}
-
 	});
 
 	//****Recogida de lecturas realizadas por dispositivo****//
 	$app->get('/getLecturas/:disId',function($disId) use($app){
 		require_once 'Modelos/DisDatos.php';
 		$resp=array();
-
 		$resultado=DisDatos::getLecturasByDisp($disId);
 		if(!is_null($resultado)){
 			$resp['estado']='OK';
