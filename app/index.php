@@ -25,8 +25,8 @@
 
 	//Registro
 	$app->post('/registro',function(){
-		require_once 'Modelo/Usuario.php';
-		require_once 'Modelo/Utils.php';
+		require_once 'Modelos/Usuario.php';
+		require_once 'Modelos/Utils.php';
 		Utils::escribeLog("Inicio Registro","debug");
 		
 		$req=$app->request();

@@ -11,7 +11,7 @@
 
 		}
 
-		public static nuevaLectura($Id_dispo,$volumen,$fuego){
+		public static function nuevaLectura($Id_dispo,$volumen,$fuego){
 			var $retVal=1; //1-->OK // 0-->KO
 			
 			try{
