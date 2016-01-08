@@ -3,7 +3,7 @@
  * Provee las constantes para conectarse a la base de datos
  * Mysql.
  */
-define("HOSTNAME", "127.5.227.130");// Nombre del host
+define("HOSTNAME", "127.8.197.2");// Nombre del host
 define("PUERTO","3306");//Puerto normal
 
 //define("HOSTNAME","localhost");
