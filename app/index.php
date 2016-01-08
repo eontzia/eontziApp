@@ -111,6 +111,22 @@
 
 	});
 
+	//****Recogida de lecturas realizadas por dispositivo****//
+	$app->get('/getLecturas/:disId',function($disId) use($app){
+		require_once 'Modelos/DisDatos.php';
+		$resp=array();
+
+		$resultado=DisDatos::getLecturasByDisp($disId);
+		if(!is_null($resultado)){
+			$resp['estado']='OK';
+			$resp['mensaje']=$resultado;
+		}else{
+			$resp['estado']='KO';
+			$resp['mensaje']='No hay lecturas del dispositivo: '.$disId;
+		}
+		echo json_encode($resp);
+	});
+
 	$app->run();
 
 	?>

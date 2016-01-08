@@ -55,5 +55,29 @@
 			}
 			return $retVal;
 		}
+
+		public static function getLecturasByDisp($id){
+			$result=array();
+
+			try{
+				$sql="SELECT Dis_datos_Id,Dispositivo_Id,Volumen,Fuego,Fecha FROM Dis_datos WHERE Dispositivo_Id=:id";
+				$comando=Conexion::getInstance()->getDb()->prepare($sql);
+				$comando->execute(array(":id"=>$id));
+
+			}catch(PDOException $e){
+				//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Usuario o email existentes]","debug");
+				$result=null;
+				return $result;
+			}
+			$cuenta=$comando->rowCount();
+
+			if($cuenta==0)//si no ha afectado a ninguna línea...
+			{
+				$result=null;
+				return $result;			
+			}
+			$result=$comando->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
 	}
 ?>
