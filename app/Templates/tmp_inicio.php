@@ -46,14 +46,13 @@
 	<!--Contenido-->
 	<div id="cont-fluid" class="container-fluid">		
 		<div id="mapa" class="col-xs-12 col-md-12">
-		</div>
-		<input id="pac-input" class="controls" type="text" placeholder="Búsqueda...">		
+		</div>				
 	</div>
-	
+	<input id="pac-input" class="controls" type="text" placeholder="Búsqueda...">
 	<!--Js Mapa-->
 	<script type="text/javascript" src="./Templates/js/mapa.js"></script>
 	<script async defer
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPdLysu0hRqWIOnzLhQXua1POAn7dEFd0&callback=initMap">
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4&libraries=places&callback=initMap">
 	</script>
 	
 </body>

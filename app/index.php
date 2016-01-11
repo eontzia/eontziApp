@@ -110,7 +110,10 @@
 	$app->get('/nuevaLectura/:disId/:vol/:fuego/:bate',function($disId,$vol,$fuego,$bate) use($app){
 		require_once 'Modelos/DisDatos.php';
 		$result=DisDatos::nuevaLectura($disId,$vol,$fuego,$bate);
-		if ($result!=1){		
+		if ($result==1){
+			echo "insert OK";
+		}else{
+			echo "insert KO";
 			$app->response->setStatus(406);
 		}
 	});
