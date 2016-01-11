@@ -42,16 +42,19 @@
 			</div><!-- /.navbar-collapse -->
   		</div><!-- /.container-->
 	</nav>
+	
 	<!--Contenido-->
 	<div id="cont-fluid" class="container-fluid">		
 		<div id="mapa" class="col-xs-12 col-md-12">
 		</div>
+		<input id="pac-input" class="controls" type="text" placeholder="Búsqueda...">		
 	</div>
-
+	
 	<!--Js Mapa-->
+	<script type="text/javascript" src="./Templates/js/mapa.js"></script>
 	<script async defer
 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPdLysu0hRqWIOnzLhQXua1POAn7dEFd0&callback=initMap">
 	</script>
-
+	
 </body>
 </html>

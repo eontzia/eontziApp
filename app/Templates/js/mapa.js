@@ -104,9 +104,9 @@
 					searchBox.setBounds(mapa.getBounds());
 				});
 				var markers = [];
-	  // [START region_getplaces]
-	  // Listen for the event fired when the user selects a prediction and retrieve
-	  // more details for that place.
+		// [START region_getplaces]
+		// Listen for the event fired when the user selects a prediction and retrieve
+		// more details for that place.
 		  searchBox.addListener('places_changed', function() {
 		    var places = searchBox.getPlaces();
 
@@ -115,7 +115,7 @@
 		    }
 
 		    // Clear out the old markers.
-		    markers.forEach(function(marker) {
+			markers.forEach(function(marker) {
 		      marker.setMap(null);
 		    });
 		    markers = [];
