@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<title>Inicio trackingapp</title>
+	<title>EontziApp</title>
 	<link rel="stylesheet" type="text/css" href="Templates/css/estilos.css">
 	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 	<link rel="icon" type="image/ico" href="../img/favicon.ico"/>
@@ -10,6 +10,11 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0">
 	<script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#txtLogIdUsuario').focus();		
+		});
+	</script>
 </head>
 <body>		
 	<nav id="cabecera" class="navbar navbar-default">
@@ -33,7 +38,7 @@
 					<strong>Atenci&oacute;n!</strong> <?php echo $flash['message']?>
 				</div>
 			<?php endif; ?>
-				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4 " id="formularios">
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6 " id="formularios">
 					<div class="login">						
 						<h2 style="margin-top:0px;">Iniciar sesión</h2>
 						<form class="form-horizontal" action="login" method="post">		

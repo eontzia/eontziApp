@@ -11,7 +11,7 @@
 
 		}
 
-		public static function nuevaLectura($Id_dispo,$volumen,$fuego){
+		public static function nuevaLectura($Id_dispo,$volumen,$fuego,$bateria){
 			$retVal=1; //1-->OK // 0-->KO
 			
 			try{
@@ -36,11 +36,12 @@
 
 			//INSERTAR EN BBDD
 			try{
-				$sql="INSERT INTO Dis_datos(Dispositivo_Id,Volumen,Fuego) VALUES (:idDispo,:vol,:fuego);";
+				$sql="INSERT INTO Dis_datos(Dispositivo_Id,Volumen,Fuego,Bateria) VALUES (:idDispo,:vol,:fuego,:bateria);";
 				$comando=Conexion::getInstance()->getDb()->prepare($sql);
 				$comando->execute(array(":idDispo"=>$Id_dispo,
 					":vol"=>$volumen,
-					":fuego"=>$fuego));
+					":fuego"=>$fuego,
+					":bateria"=>$bateria));
 			}catch(PDOException $e){
 				//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Usuario o email existentes]","debug");
 				$retVal=0;
@@ -60,7 +61,7 @@
 			$result=array();
 
 			try{
-				$sql="SELECT Dis_datos_Id,Dispositivo_Id,Volumen,Fuego,Fecha FROM Dis_datos WHERE Dispositivo_Id=:id";
+				$sql="SELECT Dis_datos_Id,Dispositivo_Id,Volumen,Fuego,Fecha,Bateria FROM Dis_datos WHERE Dispositivo_Id=:id";
 				$comando=Conexion::getInstance()->getDb()->prepare($sql);
 				$comando->execute(array(":id"=>$id));
 

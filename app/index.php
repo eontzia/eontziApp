@@ -98,11 +98,18 @@
 		}
 		$app->render('info.php',array('mensaje'=>$mensaje));
 	})->name('resultado');
+	$app->get('/inicio',function() use($app){
+		$_SESSION['nombre']='Ierai';
+		$_SESSION['apellido']='Eliz';
+		$app->render('tmp_inicio.php');
+	});
 	
+	//**********RUTAS API*************
+
 	//****Envio de datos//****
-	$app->get('/nuevaLectura/:disId/:vol/:fuego',function($disId,$vol,$fuego) use($app){
+	$app->get('/nuevaLectura/:disId/:vol/:fuego/:bate',function($disId,$vol,$fuego,$bate) use($app){
 		require_once 'Modelos/DisDatos.php';
-		$result=DisDatos::nuevaLectura($disId,$vol,$fuego);
+		$result=DisDatos::nuevaLectura($disId,$vol,$fuego,$bate);
 		if ($result==1){
 			echo "Insert OK";
 		}else{
