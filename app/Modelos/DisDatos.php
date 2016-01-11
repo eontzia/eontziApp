@@ -59,7 +59,6 @@
 
 		public static function getLecturasByDisp($id){
 			$result=array();
-
 			try{
 				$sql="SELECT Dis_datos_Id,Dispositivo_Id,Volumen,Fuego,Fecha,Bateria FROM Dis_datos WHERE Dispositivo_Id=:id";
 				$comando=Conexion::getInstance()->getDb()->prepare($sql);
