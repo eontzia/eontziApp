@@ -133,6 +133,21 @@
 		echo json_encode($resp);
 	});
 
+	$app->get('/getAllPos',function() use($app){
+		require_once 'Modelos/Dispositivo.php';
+		$idUsu=1;
+		$resp=array();
+		$resultado=Dispositivo::getAllDisp($idUsu);
+		if($resultado['estado']==1){
+			$resp['estado']='OK';
+			$resp['mensaje']=$resultado['resultado'];
+		}else{
+			$resp['estado']='KO';
+			$resp['mensaje']=$resultado['resultado'];
+		}
+		echo json_encode($resp);
+	});
+
 	$app->run();
 
 	?>
