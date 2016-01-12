@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Inicio</title>
+	<script src="//fast.eager.io/_uPAxwoIB0.js"></script>
 	<link rel="stylesheet" type="text/css" href="Templates/css/estilos.css">
 	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 	<link rel="icon" type="image/ico" href="../img/favicon.ico"/>
