@@ -1,5 +1,6 @@
 <?php
 	header('Content-Type: text/html; charset=ISO-8859-1');
+	header('Access-Control-Allow-Origin: *');
 	include_once 'BD/Conexion.php';
 	class Dispositivo{
 
@@ -12,12 +13,12 @@
 			
 			try{
 				//Obtener los datos de los dispositivos
-				$sql="SELECT Dispositivo_Id,Cliente_Id,Latitud,Longitud,Barrio
+				$sql="SELECT Dispositivo_Id,Cliente_Id,Latitud,Longitud,Barrio,Tipo
 					  FROM Dispositivos
 					  WHERE Cliente_Id IN(SELECT trab.Cliente_Id
-                    						FROM Usuarios as usu JOIN Trabajador as trab
-                    						ON usu.Trabajador_Id=trab.Trabajador_Id
-                    						WHERE usu.Usuario_Id=:id)";			
+										  FROM Usuarios as usu JOIN Trabajadores as trab
+                    					  ON usu.Trabajador_Id=trab.Trabajador_Id
+                    					  WHERE usu.Usuario_Id=:id)";			
 				$comando=Conexion::getInstance()->getDb()->prepare($sql);
 				$comando->execute(array(':id'=>$id));
 				

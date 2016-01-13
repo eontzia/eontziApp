@@ -46,10 +46,10 @@
 	
 	<!--Contenido-->
 	<div id="cont-fluid" class="container-fluid">
-		<div id="dispos" class="col-xs-12 col-md-5 col-lg-5">
-						
+		<div id="dispos" class="col-xs-12 col-md-3 col-lg-3">
+				
 		</div>		
-		<div id="mapa" class="col-xs-12 col-md-7 col-lg-7">
+		<div id="mapa" class="col-xs-12 col-md-9 col-lg-9">
 		</div>				
 	</div>
 	<input id="pac-input" class="controls" type="text" placeholder="Búsqueda...">

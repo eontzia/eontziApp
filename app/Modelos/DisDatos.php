@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 	include_once 'BD/Conexion.php';
 	class DisDatos{
 		public $DisDatos_Id;

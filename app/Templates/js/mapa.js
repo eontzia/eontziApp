@@ -7,8 +7,16 @@
 	var infoWindow = null;
 
 	//
-	function nuevoMarcadorBD(lat,lon,titulo,timeout){
-		//quitarMarcadoresBD(marcadores_nuevos);
+	function nuevoMarcadorBD(lat,lon,titulo,tipo,timeout){
+		//quitarMarcadores(marcadores_bd);
+		var strImg="http://eontzia.zubirimanteoweb.com/app/Templates/img/Container/tipo_"+tipo+".png";		
+		var img={
+			url:strImg,
+			size: new google.maps.Size(81, 81),
+  			origin: new google.maps.Point(0, 0),
+  			anchor: new google.maps.Point(20, 34),
+  			scaledSize: new google.maps.Size(25, 25)
+		};
 		window.setTimeout(function() {
 			var punto=new google.maps.LatLng(lat,lon);
 			var marcador=new google.maps.Marker({
@@ -16,33 +24,56 @@
 				title:titulo,
 				map:mapa,
 				animation:google.maps.Animation.DROP,
-				draggable:false
+				draggable:false,
+				icon:img
 			});
-			marcador.setMap(mapa);
 			marcadores_bd.push(marcador);
+
+			marcador.addEventListener("click", function(punto){
+				var content = '<div id="iw_container">' +
+                  '<div class="iw_title">Maritime Museum of Ílhavo</div>' +
+                  '<div class="iw_content">Visit the cod aquarium at the Maritime Museum of Ílhavo.</div>' +
+                  '</div>';
+				infoWindow=new google.maps.InfoWindow({map: mapa});
+				infoWindow.setPosition(punto);
+				infoWindow.setContent('Posición actual (aproximada)');
+
+			})
 		}, timeout);
 
 	}
 	//Borrar marcadores nuevos o bd
 	function quitarMarcadores(marcadores){
-		for(i in marcadores){
-			marcadores[i].setMap(null);
+		if (marcadores.length()!=0){
+			for(i in marcadores){
+				marcadores[i].setMap(null);
+			}
+			marcadores=[];
 		}
-		marcadores=[];
-	}	
+		
+	}
+
+	function getStreet(){
+		$.ajax({
+			tipe:"GET",
+			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4"
+
+		});
+	}
 
 	//Funcion para traer los puntos insertados en bd
 	function getPosiciones(){
 		$.ajax({
 			type:"GET",			
 			url:"http://eontzia.zubirimanteoweb.com/app/getAllPos",
+			//url:"http://localhost/workspace/eontziApp/app/getAllPos",
 			dataType:"JSON",
 			data:"",
 			success:function(data){
 				console.log(data);
-				if(data.estado=="ok"){
+				if(data.estado=="OK"){
 					$.each(data.mensaje,function(i,item){
-						nuevoMarcadorBD(item.latitud,item.longitud,item.titulo,i*150);
+						nuevoMarcadorBD(item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,i*150);						
 					})
 				}
 			},
@@ -86,7 +117,7 @@
 	function initMap() {
 		var punto=new google.maps.LatLng(43.308615, -1.893189);
 		var config={
-			zoom:14,
+			zoom:12,
 			center:punto,
 			mapTypeId:google.maps.MapTypeId.ROADMAP
 		};
@@ -164,33 +195,7 @@
 		}
 		
 		getPosiciones();
-		//Evento Click al mapa
-		google.maps.event.addListener(mapa,"click",function(event){
-			
-			var coordenadas=event.latLng.toString();
-			var titulo=prompt("Titulo:")
-			coordenadas=coordenadas.replace("(", "");
-			coordenadas=coordenadas.replace(")", "");
-			var lista=coordenadas.split(",");
-
-			//Abrir desplegable 1 y focus al añadir titulo
-			if($('#acAgregarP').hasClass && $('#acAgregarP').attr('class')=="collapsed" && $('#acAgregarP').attr('aria-expanded')=="false"){
-				$('#acAgregarP').removeClass("collapsed").attr("aria-expanded","true");
-				$('#collapseOne').attr("aria-expanded","true").addClass("in");
-			}
-						
-			form.find("input[name=titulo]").val(titulo).focus();
-			form.find("input[name=lat]").val(lista[0]);
-			form.find("input[name=long]").val(lista[1]);
-			nuevoMarcador(lista[0],lista[1],titulo);
-			
-		});
-
-		//Al hacer click en el boton Guardar enviar y guardar en BBDD
-		$("#btnGuardar").click(function(){
-			addPosicion();			
-		});
-
+		
 		$("#iniRuta").click(function(){
 			if(enRuta){
 				enRuta=false;
