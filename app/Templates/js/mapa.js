@@ -7,41 +7,37 @@
 	var infoWindow = null;
 
 	//
-	function nuevoMarcadorBD(lat,lon,titulo,tipo,timeout){
+	function nuevoMarcadorBD(id,lat,lon,titulo,tipo,timeout){
 		//quitarMarcadores(marcadores_bd);
 		var strImg="http://eontzia.zubirimanteoweb.com/app/Templates/img/Container/tipo_"+tipo+".png";		
 		var img={
 			url:strImg,
-			size: new google.maps.Size(81, 81),
-  			origin: new google.maps.Point(0, 0),
-  			anchor: new google.maps.Point(20, 34),
-  			scaledSize: new google.maps.Size(25, 25)
-		};
-		window.setTimeout(function() {
-			var punto=new google.maps.LatLng(lat,lon);
-			var marcador=new google.maps.Marker({
-				position:punto,
-				title:titulo,
-				map:mapa,
-				animation:google.maps.Animation.DROP,
-				draggable:false,
-				icon:img
-			});
-			marcadores_bd.push(marcador);
+			size: new google.maps.Size(45, 45)};
 
-			marcador.addEventListener("click", function(punto){
-				var content = '<div id="iw_container">' +
-                  '<div class="iw_title">Maritime Museum of Ílhavo</div>' +
-                  '<div class="iw_content">Visit the cod aquarium at the Maritime Museum of Ílhavo.</div>' +
-                  '</div>';
-				infoWindow=new google.maps.InfoWindow({map: mapa});
-				infoWindow.setPosition(punto);
-				infoWindow.setContent('Posición actual (aproximada)');
-
-			})
+		var punto=new google.maps.LatLng(lat,lon);
+		var marcador=new google.maps.Marker({
+			position:punto,
+			title:titulo,
+			map:mapa,
+			animation:google.maps.Animation.DROP,
+			draggable:false,
+			icon:img
+		});
+		window.setTimeout(function() {			
+			marcadores_bd.push(marcador);						
 		}, timeout);
-
+		//Añadir evento al marcador
+		marcador.addListener("click", function(){
+			var content = '<div id="iw_container">' +
+              '<div class="iw_title"><p>Id: '+id+'</p></div>' +
+              '<div class="iw_content"><p>Direccion: '+''+'</p></div>' +
+              '</div>';
+			infoWindow.setContent(content);			
+			infoWindow.open(mapa, marcador);
+		});
 	}
+
+	
 	//Borrar marcadores nuevos o bd
 	function quitarMarcadores(marcadores){
 		if (marcadores.length()!=0){
@@ -52,12 +48,22 @@
 		}
 		
 	}
+	function dameStreet(street){
+		return street;
+	}
 
-	function getStreet(){
+	function getStreet(lat,lon){
 		$.ajax({
 			tipe:"GET",
-			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4"
-
+			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&location_type=GEOMETRIC_CENTER&key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4",
+			dataType:"JSON",
+			data:"",
+			success:function(data){
+				console.log(data);
+				if(data.status=="OK"){
+					alert(data.results[0].formatted_address);
+				}
+			}
 		});
 	}
 
@@ -73,7 +79,8 @@
 				console.log(data);
 				if(data.estado=="OK"){
 					$.each(data.mensaje,function(i,item){
-						nuevoMarcadorBD(item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,i*150);						
+						nuevoMarcadorBD(item.Dispositivo_Id,item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,i*150);
+						getStreet(item.Latitud,item.Longitud);					
 					})
 				}
 			},
