@@ -101,6 +101,7 @@
 	$app->get('/inicio',function() use($app){
 		$_SESSION['nombre']='Ierai';
 		$_SESSION['apellido']='Eliz';
+		//$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos');
 		$app->render('tmp_inicio.php');
 	});
 	

@@ -16,6 +16,8 @@
 
 		var punto=new google.maps.LatLng(lat,lon);
 		var marcador=new google.maps.Marker({
+			id:id,
+			tipo:tipo,
 			position:punto,
 			title:titulo,
 			map:mapa,
@@ -24,16 +26,27 @@
 			icon:img
 		});
 		window.setTimeout(function() {			
-			marcadores_bd.push(marcador);						
+			marcadores_bd.push(marcador);			
 		}, timeout);
 		//Añadir evento al marcador
 		marcador.addListener("click", function(){
 			var content = '<div id="iw_container">' +
               '<div class="iw_title"><p>Id: '+id+'</p></div>' +
-              '<div class="iw_content"><p>Direccion: '+''+'</p></div>' +
+              '<div class="iw_content"><p id="contenidoIW"></p></div>' +
               '</div>';
-			infoWindow.setContent(content);			
+			infoWindow.setContent(content);
+			getStreet(lat,lon);
 			infoWindow.open(mapa, marcador);
+			$.each(marcadores_bd, function(i,item){
+				if(marcador.id=='2'){
+					if(item.id==marcador.id){
+					//alert(item.id+";"+item.tipo+";"+item.title);
+					mapa.setCenter(marcador.position);
+					return false;
+					}	
+				}
+							
+			});
 		});
 	}
 
@@ -45,8 +58,7 @@
 				marcadores[i].setMap(null);
 			}
 			marcadores=[];
-		}
-		
+		}		
 	}
 	function dameStreet(street){
 		return street;
@@ -61,7 +73,7 @@
 			success:function(data){
 				console.log(data);
 				if(data.status=="OK"){
-					alert(data.results[0].formatted_address);
+					$('#contenidoIW').html('Dirección: '+data.results[0].formatted_address);
 				}
 			}
 		});
@@ -72,7 +84,6 @@
 		$.ajax({
 			type:"GET",			
 			url:"http://eontzia.zubirimanteoweb.com/app/getAllPos",
-			//url:"http://localhost/workspace/eontziApp/app/getAllPos",
 			dataType:"JSON",
 			data:"",
 			success:function(data){
@@ -80,7 +91,6 @@
 				if(data.estado=="OK"){
 					$.each(data.mensaje,function(i,item){
 						nuevoMarcadorBD(item.Dispositivo_Id,item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,i*150);
-						getStreet(item.Latitud,item.Longitud);					
 					})
 				}
 			},
@@ -102,7 +112,6 @@
 					lat: position.coords.latitude,
 					lng: position.coords.longitude
       			};
-      			infoWindow=new google.maps.InfoWindow({map: mapa});
 				infoWindow.setPosition(pos);
 				infoWindow.setContent('Posición actual (aproximada)');
 				mapa.setCenter(pos);
@@ -115,10 +124,7 @@
 
 	function newRuta(){		
 		while(enRuta){
-
-
 		}
-
 	}	
 
 	function initMap() {
@@ -130,7 +136,7 @@
 		};
 
 		mapa = new google.maps.Map($('#mapa')[0],config);
-
+		infoWindow=new google.maps.InfoWindow({map: mapa});
 		//SearchBox
 			// Create the search box and link it to the UI element.
 			var input = $('#pac-input')[0];
