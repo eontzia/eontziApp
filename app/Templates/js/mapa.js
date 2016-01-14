@@ -34,19 +34,27 @@
               '<div class="iw_title"><p>Id: '+id+'</p></div>' +
               '<div class="iw_content"><p id="contenidoIW"></p></div>' +
               '</div>';
-			infoWindow.setContent(content);
-			getStreet(lat,lon);
+			if(!infoWindow){
+  				infoWindow=new google.maps.InfoWindow({map: mapa});
+  				infoWindow.setContent(content);
+				//getStreet(lat,lon);
+			}else{
+				infoWindow.setContent(content);
+				//getStreet(lat,lon);
+			}			
 			infoWindow.open(mapa, marcador);
+			//getStreet(lat,lon);
 			$.each(marcadores_bd, function(i,item){
-				if(marcador.id=='2'){
+				//if(marcador.id=='2'){
 					if(item.id==marcador.id){
 					//alert(item.id+";"+item.tipo+";"+item.title);
 					mapa.setCenter(marcador.position);
 					return false;
 					}	
-				}
+				//}
 							
 			});
+			getStreet(lat,lon);
 		});
 	}
 
@@ -59,9 +67,6 @@
 			}
 			marcadores=[];
 		}		
-	}
-	function dameStreet(street){
-		return street;
 	}
 
 	function getStreet(lat,lon){
@@ -112,6 +117,11 @@
 					lat: position.coords.latitude,
 					lng: position.coords.longitude
       			};
+
+      			if(!infoWindow){
+      				infoWindow=new google.maps.InfoWindow({map: mapa});
+      			}
+      			
 				infoWindow.setPosition(pos);
 				infoWindow.setContent('Posición actual (aproximada)');
 				mapa.setCenter(pos);
@@ -136,7 +146,7 @@
 		};
 
 		mapa = new google.maps.Map($('#mapa')[0],config);
-		infoWindow=new google.maps.InfoWindow({map: mapa});
+		
 		//SearchBox
 			// Create the search box and link it to the UI element.
 			var input = $('#pac-input')[0];
