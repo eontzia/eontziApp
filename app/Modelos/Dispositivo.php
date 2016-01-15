@@ -20,7 +20,8 @@
 					  AND Cliente_Id IN(SELECT trab.Cliente_Id
 										FROM Usuarios as usu JOIN Trabajadores as trab
 										ON usu.Trabajador_Id=trab.Trabajador_Id
-										WHERE usu.Usuario_Id=:id)";			
+										WHERE usu.Usuario_Id=:id)
+					  ORDER BY dis.Tipo";			
 				$comando=Conexion::getInstance()->getDb()->prepare($sql);
 				$comando->execute(array(':id'=>$id));
 				

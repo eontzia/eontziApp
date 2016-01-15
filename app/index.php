@@ -63,9 +63,29 @@
 		}
 	});
 	//login
-	$app->get('/login',function()use ($app){
-		$mensaje= "err_reg_usr";
-		$app->redirect($app->urlfor('resultado',array('mensaje'=>$mensaje)));		
+	$app->post('/login',function()use ($app){
+		require_once 'Modelos/Usuario.php';
+		
+		$usr=$app->request->post('NomUsuario');
+		$pass=$app->request->post('pass');
+
+		if(isset($usr) && isset($pass))
+		{
+			$result=Usuario::comprobarUsuario($usr,$pass);
+			if($result==1){
+				$app->redirect($app->urlFor('PaginaInicio'));
+			}else if($result==0){
+				$app->flash('message',"No existe el usuario");
+				$app->redirect($app->urlFor('Inicio'));
+			}else {
+				$app->flash('message',"El usuario no est&aacute; validado, valida para poder acceder.");
+				$app->redirect($app->urlFor('Inicio'));
+			}
+		}else
+		{
+			$app->flash('message',"Faltan datos por introducir.");
+			$app->redirect($app->urlFor('Inicio'));
+		}		
 	});
 
 	$app->get('/result/:mensaje',function($mensaje) use($app){
@@ -99,14 +119,12 @@
 		$app->render('info.php',array('mensaje'=>$mensaje));
 	})->name('resultado');
 	
-	$app->get('/inicio',function() use($app){
-		$_SESSION['nombre']='Ierai';
-		$_SESSION['apellido']='Eliz';
+	$app->get('/inicio',function() use($app){		
 		$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos');
 		//$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos');
 		$array=json_decode($json,true);
 		$app->render('tmp_inicio.php',array('res'=>$array));
-	});
+	})->name('PaginaInicio');
 	
 	//**********RUTAS API*************
 
@@ -120,6 +138,11 @@
 			echo "insert KO";
 			$app->response->setStatus(406);
 		}
+	});
+
+	$app->get('/logout',function()use ($app){
+		session_destroy();
+		$app->redirect($app->urlFor('Inicio'));
 	});
 
 	//****Recogida de lecturas realizadas por dispositivo****//
@@ -151,6 +174,7 @@
 		}
 		echo json_encode($resp);
 	});
+
 
 	$app->run();
 

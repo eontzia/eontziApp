@@ -58,7 +58,7 @@
 			return EnviarCorreo($Nombre,$ape1,$correo,$URL,$Subject,$Mensaje);			
 		}
 
-		public function EnviarCorreo($Nombre,$ape1,Correo,$URL,$Subject,$Mensaje)
+		public function EnviarCorreo($Nombre,$ape1,$Correo,$URL,$Subject,$Mensaje)
 		{
 			try{
 				$mail = new PHPMailer();

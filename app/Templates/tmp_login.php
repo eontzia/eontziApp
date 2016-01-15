@@ -46,7 +46,7 @@
 							<div class="form-group">
 								<label for="txtLogIdUsuario" class="col-sm-3 control-label">Id usuario</label>
 								<div class="col-sm-9">
-									<input class="form-control" id="txtLogIdUsuario" type="text" name="idUsuario" placeholder="Id usuario" tabindex="1" required>
+									<input class="form-control" id="txtLogIdUsuario" type="text" name="NomUsuario" placeholder="Id usuario" tabindex="1" required>
 								</div>
 							</div>
 							<div class="form-group">
