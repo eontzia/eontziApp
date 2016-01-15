@@ -7,7 +7,7 @@
 	var infoWindow = null;
 
 	//
-	function nuevoMarcadorBD(id,lat,lon,titulo,tipo,timeout){
+	function nuevoMarcadorBD(id,lat,lon,titulo,tipo,fecha,volumen,bateria,timeout){
 		//quitarMarcadores(marcadores_bd);
 		var strImg="http://eontzia.zubirimanteoweb.com/app/Templates/img/Container/tipo_"+tipo+".png";		
 		var img={
@@ -30,31 +30,8 @@
 		}, timeout);
 		//Añadir evento al marcador
 		marcador.addListener("click", function(){
-			var content = '<div id="iw_container">' +
-              '<div class="iw_title"><p>Id: '+id+'</p></div>' +
-              '<div class="iw_content"><p id="contenidoIW"></p></div>' +
-              '</div>';
-			if(!infoWindow){
-  				infoWindow=new google.maps.InfoWindow({map: mapa});
-  				infoWindow.setContent(content);
-				//getStreet(lat,lon);
-			}else{
-				infoWindow.setContent(content);
-				//getStreet(lat,lon);
-			}			
-			infoWindow.open(mapa, marcador);
-			//getStreet(lat,lon);
-			$.each(marcadores_bd, function(i,item){
-				//if(marcador.id=='2'){
-					if(item.id==marcador.id){
-					//alert(item.id+";"+item.tipo+";"+item.title);
-					mapa.setCenter(marcador.position);
-					return false;
-					}	
-				//}
-							
-			});
-			getStreet(lat,lon);
+			
+			getStreet(lat,lon,id,fecha,volumen,bateria,marcador);
 		});
 	}
 
@@ -69,6 +46,7 @@
 		}		
 	}
 
+/*
 	function getStreet(lat,lon){
 		$.ajax({
 			tipe:"GET",
@@ -78,7 +56,82 @@
 			success:function(data){
 				console.log(data);
 				if(data.status=="OK"){
+					while($('#contenidoIW').size()==0){}
 					$('#contenidoIW').html('Dirección: '+data.results[0].formatted_address);
+				}
+			}
+		});
+	}
+	*/
+function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
+		$.ajax({
+			tipe:"GET",
+			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&location_type=GEOMETRIC_CENTER&key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4",
+			dataType:"JSON",
+			data:"",
+			success:function(data){
+				console.log(data);
+				if(data.status=="OK"){
+					//while($('#contenidoIW').size()==0){}
+					//$('#contenidoIW').html('Dirección: '+data.results[0].formatted_address);
+					var colores=['red','green','orange'];
+					var PBarVolumen='<div class="progress" style="width:150px;height:12px">';
+  						PBarVolumen+='<div class="progress-bar" role="progressbar" aria-valuenow="'+volumen+'" aria-valuemin="0" aria-valuemax="100" ';
+  						if(volumen>85){
+  							PBarVolumen+='style="width:'+volumen+'%;background-color:'+colores[1]+'">';
+  						}else if(volumen>=55&&volumen<=85){
+  							PBarVolumen+='style="width:'+volumen+'%;background-color:'+colores[2]+'">';
+  						}else{
+  							PBarVolumen+='style="width:'+volumen+'%;background-color:'+colores[0]+'">';
+  						}
+
+    					PBarVolumen+='<span class="sr-only">'+volumen+'% Complete</span>';
+  						PBarVolumen+='</div>';
+						PBarVolumen+='</div>';
+
+					var PBarBateria='<div class="progress" style="width:150px;height:12px">';
+  						PBarBateria+='<div class="progress-bar" role="progressbar" aria-valuenow="'+bateria+'" aria-valuemin="0" aria-valuemax="100" ';
+  						if(bateria>=0&&bateria<=15){
+  							PBarBateria+='style="width:'+bateria+'%;background-color:'+colores[0]+'">';
+  						}else if(bateria>15&&bateria<45){
+  							PBarBateria+='style="width:'+bateria+'%;background-color:'+colores[2]+'">';
+  						}else{
+  							PBarBateria+='style="width:'+bateria+'%;background-color:'+colores[1]+'">';
+  						}
+
+    					PBarBateria+='<span class="sr-only">'+bateria+'% Complete</span>';
+  						PBarBateria+='</div>';
+						PBarBateria+='</div>';
+
+					var content = '<div id="iw_container">' +
+		              '<div class="iw_title"><p>Id: '+id+'</p></div>' +
+		              '<div class="iw_content"><p id="contenidoIW">'+
+		              'Volumen: '+volumen+'% '+PBarVolumen+
+		              'Batería: '+bateria+'% '+PBarBateria+
+		              'Fecha de medición: '+fecha+'<br>'+
+		              'Dirección: '+data.results[0].formatted_address+'</p></div>' +
+		              '</div>';
+					if(!infoWindow){
+		  				infoWindow=new google.maps.InfoWindow({map: mapa});
+		  				infoWindow.setContent(content);
+						//getStreet(lat,lon);
+					}else{
+						infoWindow.setContent(content);
+						//getStreet(lat,lon);
+					}			
+					infoWindow.open(mapa, marcador);
+					//getStreet(lat,lon);
+					$.each(marcadores_bd, function(i,item){
+						//if(marcador.id=='2'){
+							if(item.id==marcador.id){
+							//alert(item.id+";"+item.tipo+";"+item.title);
+							mapa.setCenter(marcador.position);
+							return false;
+							}	
+						//}
+										
+					});
+
 				}
 			}
 		});
@@ -87,7 +140,8 @@
 	//Funcion para traer los puntos insertados en bd
 	function getPosiciones(){
 		$.ajax({
-			type:"GET",			
+			type:"GET",
+			//url:"http://localhost/workspace/eontziApp/app/getAllPos",	
 			url:"http://eontzia.zubirimanteoweb.com/app/getAllPos",
 			dataType:"JSON",
 			data:"",
@@ -95,7 +149,7 @@
 				console.log(data);
 				if(data.estado=="OK"){
 					$.each(data.mensaje,function(i,item){
-						nuevoMarcadorBD(item.Dispositivo_Id,item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,i*150);
+						nuevoMarcadorBD(item.Dispositivo_Id,item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,item.Fecha,item.Volumen,item.Bateria,i*150);
 					})
 				}
 			},

@@ -13,12 +13,14 @@
 			
 			try{
 				//Obtener los datos de los dispositivos
-				$sql="SELECT Dispositivo_Id,Cliente_Id,Latitud,Longitud,Barrio,Tipo
-					  FROM Dispositivos
-					  WHERE Cliente_Id IN(SELECT trab.Cliente_Id
-										  FROM Usuarios as usu JOIN Trabajadores as trab
-                    					  ON usu.Trabajador_Id=trab.Trabajador_Id
-                    					  WHERE usu.Usuario_Id=:id)";			
+				$sql="SELECT dis.Dispositivo_Id,dis.Cliente_Id,dis.Latitud,dis.Longitud,dis.Barrio,dis.Tipo,L.Volumen,L.Fuego,L.Bateria,L.Fecha 
+					  FROM Dispositivos as dis, Dis_datos as L LEFT JOIN Dis_datos as R			  
+					  ON L.Dispositivo_Id=R.Dispositivo_Id AND L.Fecha<R.Fecha
+					  WHERE isnull(R.Dispositivo_Id)AND dis.Dispositivo_Id=L.Dispositivo_Id 
+					  AND Cliente_Id IN(SELECT trab.Cliente_Id
+										FROM Usuarios as usu JOIN Trabajadores as trab
+										ON usu.Trabajador_Id=trab.Trabajador_Id
+										WHERE usu.Usuario_Id=:id)";			
 				$comando=Conexion::getInstance()->getDb()->prepare($sql);
 				$comando->execute(array(':id'=>$id));
 				

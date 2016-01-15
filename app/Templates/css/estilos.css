@@ -135,3 +135,7 @@ Contenido
 		text-overflow: ellipsis;
 		width: 300px;
 	}
+
+	#dispos{
+		padding-left: 0px;
+	}
