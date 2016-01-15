@@ -102,8 +102,8 @@
 	$app->get('/inicio',function() use($app){
 		$_SESSION['nombre']='Ierai';
 		$_SESSION['apellido']='Eliz';
-		//$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos');
-		$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos');
+		$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos');
+		//$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos');
 		$array=json_decode($json,true);
 		$app->render('tmp_inicio.php',array('res'=>$array));
 	});
