@@ -119,11 +119,20 @@
 		$app->render('info.php',array('mensaje'=>$mensaje));
 	})->name('resultado');
 	
-	$app->get('/inicio',function() use($app){		
-		$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos');
-		//$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos');
-		$array=json_decode($json,true);
-		$app->render('tmp_inicio.php',array('res'=>$array));
+	$app->get('/inicio',function() use($app){
+		if(!isset($_SESSION['id_usuario']))
+		{
+			//render login
+			$app->flash('message',"Debe iniciar sesión para acceder.");
+			$app->redirect($app->urlFor('Inicio'));
+		}
+		else
+		{
+			$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos');
+			//$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos');
+			$array=json_decode($json,true);
+			$app->render('tmp_inicio.php',array('res'=>$array));
+		}		
 	})->name('PaginaInicio');
 	
 	//**********RUTAS API*************
