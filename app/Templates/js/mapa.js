@@ -66,7 +66,7 @@
 function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
 		$.ajax({
 			tipe:"GET",
-			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&location_type=GEOMETRIC_CENTER&key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4",
+			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&location_type=GEOMETRIC_CENTER&key=",
 			dataType:"JSON",
 			data:"",
 			success:function(data){
