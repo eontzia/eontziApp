@@ -23,7 +23,7 @@
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">								
 				<a id="titulo" href="http://eontzia.zubirimanteoweb.com/">
-					<img class="logo" src="../img/logo.png">
+					<img class="logo" src="../img/logo_sin.png">
 					<span class="site-name">E-ontziApp</span>
 					<span class="site-desc">Web de E-ontzia.</span>
 				</a>

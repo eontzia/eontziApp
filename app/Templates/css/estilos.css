@@ -62,7 +62,7 @@ p {
  * Navegación
  */
 #cabecera {
-	background-color: #91b7b0;
+	background-color: #2A4C3B;
 	border: 0px;
 	border-radius: 0px;
 	box-shadow: 1px 2px 9px #888888;
@@ -91,6 +91,8 @@ Contenido
 	-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.4);
 	-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.4);
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.4);
+	background-color: #fff;
+	border:1px solid;
 }
 
  /* MAPA*/

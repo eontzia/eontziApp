@@ -24,7 +24,7 @@
 			$this->ReplyTo='Administrador E-ontzia';
 		}
 
-		public function enviarCorreoRegistro($idUsuario,$Nombre,$ape1,$ape2="",$correo,$key){			
+		public function enviarCorreoRegistro($idUsuario,$Nombre,$ape1,$correo,$key,$ape2=""){			
 			Utils::escribeLog("Inicio PHPMailer","debug");
 			$URL="http://eontzia.zubirimanteoweb.com/usuario/validar/".$correo."/".$key;			
 			$Subject='Bienvenido a EontziApp';
@@ -35,8 +35,7 @@
 				}
 				$mensaje.=' a eontziApp</h1><br/><p>Ha sido añadido al grupo </p><br/>
 					<p>Su nombre de usuario: '.$idUsuario.'</p>Su correo: '.$correo.'
-					<p>Ha sido inscrito correctamente, para poder acceder a la aplicación debe validar su usuario. Para validar, pulse en el siguiente enlace para validar:</p> 
-					<p><a href="'.$URL.'">'.$URL.'</a></p></div>';
+					<p>Ha sido inscrito correctamente, para poder acceder a la aplicación debe validar su usuario. Para validar, pulse <a href="'.$URL.'">aquí.</a></p></div>';
 	
 			return EnviarCorreo($Nombre,$ape1,$correo,$URL,$Subject,$Mensaje);
 		}
@@ -53,8 +52,7 @@
 					$mensaje.=" ".$ape2;
 				}
 				$mensaje.=' a EontziApp</h2><p>Se ha confirmado correctamente su solicitud de validación de usuario en <b>EontziApp</b></p>					
-					<p>Puede iniciar sesión y acceder a la aplicación desde aquí:</p> 
-					<p><a href="'.$URL.'">'.$URL.'</a></p></div>';
+					<p>Puede iniciar sesión y acceder a la aplicación desde <a href="'.$URL.'">aquí</a></p></div>';
 			return EnviarCorreo($Nombre,$ape1,$correo,$URL,$Subject,$Mensaje);			
 		}
 
@@ -81,9 +79,7 @@
 				$mail->FromName=$this->$FromName;
 				$mail->addReplyTo($this->usernameFrom,$this->$ReplyTo);
 				$mail->Subject = $Subject;
-				$mail->WordWrap= 50;
-
-				//$urlValidar=getURLValidar($correo,$key);			
+				$mail->WordWrap= 50;		
 
 				$mail->msgHTML($Mensaje);
 				
@@ -98,7 +94,7 @@
 				Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Error al enviar correo]","debug");
 				return false;
 			}			
-			return true;;
+			return true;
 		}
 	}
 ?>

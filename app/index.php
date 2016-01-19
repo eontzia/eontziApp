@@ -24,18 +24,18 @@
 	})->via('GET')->name('Inicio');
 
 	//Registro
-	$app->post('/registro',function(){
-		require_once 'Modelos/Usuario.php';
+	$app->post('/registro',function()use ($app){
+		require_once 'Modelos/Cliente.php';
 		require_once 'Modelos/Utils.php';
 		Utils::escribeLog("Inicio Registro","debug");
 		
 		$req=$app->request();
-		$nom_empresa=$req->post('nombre_empresa');
-		$nom=$req->post("nombre");
-		$app=$req->post("appelido");
-		$cont=$req->post("contasena");
-		$email=$req->post("correo");
-		$result=Usuario::nuevoUsuario($nom_empresa,$nom,$app,$cont,$email);
+		$nom_empresa=trim($req->post('nombre_empresa'));
+		$nom=trim($req->post("nombre"));
+		$ape=trim($req->post("apellido"));
+		$telef=trim($req->post("telefono"));
+		$email=trim($req->post("correo"));
+		$result=Cliente::nuevoCliente($nom_empresa,$nom,$ape,$email,$telef);
 		//0->KO / 1->OK / 2->Existe el usuario / 3->registro OK correo KO
 		/*Códigos de mensajes= 
 		

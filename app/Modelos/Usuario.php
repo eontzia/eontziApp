@@ -18,9 +18,7 @@ require_once 'Utils.php';
 	public function __construct()
 	{
 		$this->mId_Usuario="";
-		$this->mNombre="";
-		$this->mApellido1="";
-		$this->mApellido2="";
+		$this->mNombreUsuario="";
 		$this->mEmail="";
 		$this->mPass="";
 		$this->mValidado="";
@@ -43,43 +41,14 @@ require_once 'Utils.php';
 	//NOMBRE
 	public function setNombreUsuario($nom)
 	{
-		$this->mNombre=$nom;
+		$this->mNombreUsuario=$nom;
 	}
 	public function getNombreUsuario()
 	{
-		return $this->mNombre;
+		return $this->mNombreUsuario;
 	}
 
-	//APELLIDO 1
-	public function setApellido1($ape1)
-	{
-		$this->mApellido1=$ape1;
-	}
-	public function getApellido1()
-	{
-		return $this->mApellido1;
-	}
-
-	//APELLIDO 2
-	public function setApellido2($ape2)
-	{
-		$this->mApellido2=$ape2;
-	}
-	public function getApellido2()
-	{
-		return $this->mApellido2;
-	}
-
-	//EMAIL
-	public function setEmail($email)
-	{
-		$this->mEmail=$email;
-	}
-	public function getEmail()
-	{
-		return $this->mEmail;
-	}	
-
+	
 	//PASSWORD
 	public function setPass($Pass)
 	{
@@ -90,21 +59,6 @@ require_once 'Utils.php';
 		return $this->mPass;
 	}
 
-	//VALIDADO
-	public function setValidado($vali)
-	{
-		$this->mValidado=$vali;
-	}	
-	public function getValidado()
-	{
-		return $this->mValidado;
-	}
-
-	//FECHA
-	public function getFecha()
-	{
-		return $this->mFecha;
-	}
 
 	//******************************
 	//SECCION INTERACCIÓN CON BBDD *
@@ -251,20 +205,19 @@ require_once 'Utils.php';
 		$retVal=1;
 		//Utils::escribeLog('inicio comprobar usuario','debug');
 
-		//comprobar en bd
-		
+		//comprobar en bd		
 		try{
 			$sql="SELECT usu.Usuario_Id, trab.Nombre, trab.Apellido
 				  FROM Usuarios AS usu
 				  JOIN Trabajadores AS trab ON usu.Trabajador_Id = trab.Trabajador_Id
 				  WHERE usu.Nombre_Usuario LIKE  :id
-				  AND trab.Password LIKE  :pass";
+				  AND usu.Password LIKE :pass";
 			$comando=Conexion::getInstance()->getDb()->prepare($sql);
-			$comando->execute(array(":id"=>$idUsuario,":pass"=>$pass));
+			$comando->execute(array(":id"=>$idUsuario,":pass"=>md5($pass)));
 
 		}catch(PDOException $e){
 			//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." ","debug");
-			$retval=0;
+			$retVal=0;
 			return $retVal;
 
 		}
