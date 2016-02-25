@@ -63,13 +63,17 @@ p {
 	bottom: 2px;
 	right: 2px;
 }
-@media (max-width: 500px){
+@media (max-width: 600px){
 	#bt-google{
 		position: absolute;
 		top: 2px;
 		right: 2px;
 	}
+	#contacto_links{
+		display: none;
+	}
 }
+
 
 
 /* h4 de alerts*/
@@ -213,6 +217,7 @@ Contenido
 
 	#dispos{
 		padding-left: 0px;
+		padding-right: 0px;
 	}
 
 	/*Progress bars*/

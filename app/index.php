@@ -3,15 +3,15 @@
 	session_start();
 
 	require 'vendor/autoload.php';
-	//$url="http://eontzia.zubirimanteoweb.com";
-	//$url="localhost/workspace/eontziApp";
+	$URL="http://eontzia.zubirimanteoweb.com/";
+	// $URL="http://localhost/workspace/eontziApp/";
+	
 	Slim\Slim::registerAutoloader();
 
 	$app= new \Slim\Slim();
 	$app->config(array(
 		'debug' =>true ,
 		'templates.path' =>'Templates'));
-
 	//Raiz de /app
 	$app-> map('/',function() use ($app){
 		
@@ -24,7 +24,9 @@
 			$app->redirect($app->urlFor('PaginaInicio'));			
 		}	
 	})->via('GET')->name('Inicio');
-	
+	$app->get('/inicio2',function()use ($app){
+		$app->render('tmp_inicio2.php');
+	});
 	//Contacto
 	$app->post('/contacto',function()use ($app){
 		include_once 'Modelos/CorreoUser.php';
@@ -123,7 +125,7 @@
 		else{
 			$id=$_SESSION['id_usuario'];
 
-			$json2=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getUsrData/'.$id);				
+			$json2=file_get_contents($GLOBALS['URL'].'app/getUsrData/'.$id);				
 			//$json2=file_get_contents('http://localhost/workspace/eontziApp/app/getUsrData/'.$id);
 			$usr=json_decode($json2,true);
 			$app->render('tmp_config.php',array('nombre'=>$usr['mensaje']['Nombre']." ".$usr['mensaje']['Apellido'],'img'=>$usr['mensaje']['Profile_ImageURL']));
@@ -160,8 +162,8 @@
 		else
 		{	
 			$id=$_SESSION['id_usuario'];
-			$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos/?id='.$id);
-			$json2=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getUsrData/'.$id);		
+			$json=file_get_contents($GLOBALS['URL'].'app/getAllPos/?id='.$id);
+			$json2=file_get_contents($GLOBALS['URL'].'app/getUsrData/'.$id);		
 			//$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos/?id='.$id);			
 			//$json2=file_get_contents('http://localhost/workspace/eontziApp/app/getUsrData/'.$id);
 			$array=json_decode($json,true);
@@ -472,8 +474,8 @@
 		else
 		{	
 			$id=$_SESSION['id_usuario'];
-			$json=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getAllPos/?id='.$id);
-			$json2=file_get_contents('http://eontzia.zubirimanteoweb.com/app/getUsrData/'.$id);
+			$json=file_get_contents($GLOBALS['URL'].'app/getAllPos/?id='.$id);
+			$json2=file_get_contents($GLOBALS['URL'].'app/getUsrData/'.$id);
 			//$json=file_get_contents('http://localhost/workspace/eontziApp/app/getAllPos/?id='.$id);
 			//$json2=file_get_contents('http://localhost/workspace/eontziApp/app/getUsrData/'.$id);
 			$array=json_decode($json,true);
@@ -595,16 +597,16 @@
 	});
 
 	//****Recogida de los datos del Cliente****//
-	$app->get('/getCliente/:CliId',function($CliId) use ($app){
+	$app->get('/getCliente/:usrId',function($usrId) use ($app){
 		require_once 'Modelos/Cliente.php';
 		$resp=array();
-		$resultado=Cliente::getClientes($CliId);
-		if(!$resultado['estado']==1){
+		$resultado=Cliente::getClientes($usrId);
+		if($resultado['estado']==1){
 			$resp['estado']='OK';
 			$resp['mensaje']=$resultado['resultado'];
 		}else{
 			$resp['estado']='KO';
-			$resp['mensaje']='No hay Cliente con ID :'. $CliId;
+			$resp['mensaje']='Error al buscar el cliente.';
 		}
 		echo json_encode($resp, JSON_UNESCAPED_UNICODE);
 	});

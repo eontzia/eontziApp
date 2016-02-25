@@ -1,3 +1,6 @@
+
+var URL="http://eontzia.zubirimanteoweb.com/";
+//var URL="http://localhost/workspace/eontziApp/";
 $(document).ready(function(){
 	//***** VALIDACIONES ******
 	//VALIDAR EL TRABAJADOR
@@ -76,13 +79,13 @@ $(document).ready(function(){
 
 	//**** AJAX ****
 	//  AJAX PARA RECOGER EL CLIENTE 
-	var div = document.getElementById("dom-target");
-	var ID = div.textContent;
+	//var div = document.getElementById("dom-target");
+	//var ID = div.textContent;
 	var myClient= {};
 	$.ajax({
 		type:"GET",
-		//url:"http://localhost/workspace/eontziApp/app/getCliente/"+ID,	
-		url:"http://eontzia.zubirimanteoweb.com/app/getCliente/"+ID,
+			
+		url:URL+"app/getCliente/"+usr,
 		//url:"http://localhost/workspace/Aitor/classes/chris_residuos/eontzia_/new_eontzia/eontzia/app/getCliente/"+ID,
 		dataType:"JSON",
 		data:"",
@@ -108,7 +111,7 @@ $(document).ready(function(){
 	$.ajax({
 		type:"GET",
 		//url:"http://localhost/workspace/eontziApp/app/getAllDispMod",	
-		url:"http://eontzia.zubirimanteoweb.com/app/getAllDispMod",
+		url:URL+"app/getAllDispMod",
 		//url:"http://localhost/workspace/Aitor/classes/chris_residuos/eontzia_/new_eontzia/eontzia/app/getAllDispMod/",
 		dataType:"JSON",
 		data:"",
@@ -145,7 +148,7 @@ $(document).ready(function(){
 	$.ajax({
 			type:"GET",
 			//url:"http://localhost/workspace/eontziApp/app/getAllTrabMod",	
-			url:"http://eontzia.zubirimanteoweb.com/app/getAllTrabMod",
+			url:URL+"app/getAllTrabMod",
 			//url:"http://localhost/workspace/Aitor/classes/chris_residuos/eontzia_/new_eontzia/eontzia/app/getAllTrabMod",
 			dataType:"JSON",
 			data:"",

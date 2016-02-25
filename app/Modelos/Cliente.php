@@ -19,8 +19,7 @@ class Cliente
 		$retVal=1;//0->KO / 1->OK / 2->Existe el cliente /3-> Cliente insertado correo KO
 		Utils::escribeLog("Inicio nuevoUsuario","debug");
 		$bd=Conexion::getInstance()->getDb();		 
-		try{
-			
+		try{			
 			//Antes de insertar comprobar que no exista el mismo nombre de empresa
 			$sql="SELECT Cliente_Id FROM Clientes WHERE Nombre=:nom_emp";
 			$comando=$bd->prepare($sql);
@@ -74,13 +73,37 @@ class Cliente
 		return $retVal;	//si todo va OK deveria devolver 1
 	}
 
-	public static function getClientes($cli){
+	public static function getClientes($idUsu){
 		$datosCliente=array();
 		$bd=Conexion::getInstance()->getDb();
+
+		//recuperar el id_cliente en base al usuario
+		try{
+			$sql="SELECT trab.Cliente_Id
+				  FROM Usuarios usu JOIN Trabajadores trab
+				  ON usu.Trabajador_Id=trab.Trabajador_Id
+				  WHERE usu.Usuario_Id=:id";
+			$consulta=$bd->prepare($sql);
+			$consulta->execute(array(':id'=>$idUsu));
+
+
+		}catch(PDOException $e){
+			$retVal=0;
+			return $retVal;
+		}
+		if($consulta->rowCount()==0){
+			$datosCliente['estado']=0;
+			$datosCliente['resultado']="No hay Cliente asociado.";
+			return $datosCliente;
+		}else{
+			$datoCli=$consulta->fetch(PDO::FETCH_ASSOC);
+			$idCli=$datoCli['Cliente_Id'];
+		}
+
 		try{
 			$sql="SELECT Cliente_Id, Nombre, Comprado, Fecha_creacion, Comentarios, NIF, Fecha_modif, Nombre_contacto, Apellido_contacto, Correo_contacto, Tel_contacto FROM Clientes WHERE Cliente_Id=:id";
 			$comandocli=$bd->prepare($sql);
-			$comandocli->execute(array(":id"=>$cli));
+			$comandocli->execute(array(":id"=>$idCli));
 		}catch(PDOException $e){
 			Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Cliente  existentes]","debug");
 			$datosCliente['estado']=0;
@@ -91,7 +114,7 @@ class Cliente
 			if($cuenta==0)//si no ha afectado a ninguna línea...
 			{
 				$datosCliente['estado']=0;
-				$datosCliente['resultado']="No hay Cliente con el ID :".$cli;
+				$datosCliente['resultado']="No hay Cliente con el ID :".$idCli;
 				return $datosCliente;			
 			}
 			$datosCliente['estado']=1;

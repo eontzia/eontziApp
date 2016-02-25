@@ -340,19 +340,16 @@
 			</div>
 		</div>	
 	</div>
-	<!-- snip COGER EL VARIABLE Y PASAR AL JS-->
-	<div id="dom-target" style="display: none" >
-		<?php 
-			$output = $_SESSION['cliente_id']; //Again, do some operation, get the output.
-			echo htmlspecialchars($output); /* You have to escape because the result
-			will not be valid HTML otherwise. */
-		?>
-	</div>	
+		
 	<!---snip end-->
+	<script type="text/javascript">
+		var usr=<?php echo $_SESSION['id_usuario']?>
+	</script>
 	<script src="./Templates/js/config.js"></script>
 	<script src="./Templates/js/mapa-modal.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4&libraries=places">
+	<script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_API_KEY_AQUI_&libraries=places">
 	</script>
+	
 	
 </body>
 </html>

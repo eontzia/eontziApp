@@ -129,18 +129,20 @@ html,body,#carousel-example-generic,.carousel-inner,.item,.item.active{
 	 padding-top: 3cm;
 }
 #jum01{
-	 padding-bottom: 2cm;
+	 padding-bottom: 1cm;
 	 background: #2A4C3B;
 	 color: white;
+	 margin-bottom: 0px;
 	 
 }
 .jumbotron h1{
   text-align: center;
 }
 #jum02{
-	 padding-bottom: 2cm;
+	 padding-bottom: 1cm;
 	 background: white;
 	 color:  #2A4C3B;
+	 margin-bottom: 0px;
 }
 .sec{
 	background-color:  #2A4C3B;

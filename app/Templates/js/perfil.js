@@ -1,5 +1,24 @@
 var edicion=false;
+var grados=1;
 $(document).ready(function(){
+	
+		window.setInterval(function(){
+
+		if(grados>366){
+			grados=1;
+			$('#cabecera-perfil').css('background-image','linear-gradient('+grados+'deg, #158199, #159957)');
+			grados=grados+5;
+			//console.log(grados);
+		}else{
+			$('#cabecera-perfil').css('background-image','linear-gradient('+grados+'deg, #158199, #159957)');
+			grados=grados+5;
+			//console.log(grados);
+		}	
+		
+	}, 300);
+
+	
+	
 	//***** VALIDACIONES ******
 	//VALIDAR EL TRABAJADOR
 	var reglas = {  

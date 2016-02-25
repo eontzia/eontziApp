@@ -6,18 +6,21 @@
 	var geoActivado=null;
 	var infoWindow = null;
 
+	var URL="http://eontzia.zubirimanteoweb.com/";
+	//var URL="http://localhost/workspace/eontziApp/";
+
 	//
 	function nuevoMarcadorBD(id,lat,lon,titulo,tipo,fecha,volumen,bateria,direccion,timeout){
 		var estadoBatera="";
 		if(bateria>0&&bateria<=25){
-			estadoBatera="La batería está cerca de agotarse.";
+			estadoBatera="La batería está cerca de agotarse. "+bateria+"%";
 		}else if(bateria>25&&bateria<55){
-			estadoBatera="Buena, carga media.";
+			estadoBatera="Buena, carga media. "+bateria+"%";
 		}else{
-			estadoBatera="Muy buena, carga completa o casi completa.";
+			estadoBatera="Muy buena, carga completa o casi completa. "+bateria+"%";
 		}
 		//quitarMarcadores(marcadores_bd);
-		var strImg="http://eontzia.zubirimanteoweb.com/app/Templates/img/Container/tipo_"+tipo+".png";		
+		var strImg=URL+"app/Templates/img/Container/tipo_"+tipo+".png";		
 		var img={
 			url:strImg,
 			size: new google.maps.Size(45, 45)};
@@ -82,11 +85,11 @@
 				
 					//BATERIA
 					if(bateria>0&&bateria<=25){
-						$('#pBarBateria').removeClass().addClass('progress-bar danger').css('width','10%');
+						$('#pBarBateria').removeClass().addClass('progress-bar danger').css('width',bateria+'%');
 					}else if(bateria>25&&bateria<55){
-						$('#pBarBateria').removeClass().addClass('progress-bar warning').css('width','45%');
+						$('#pBarBateria').removeClass().addClass('progress-bar warning').css('width',bateria+'%');
 					}else{
-						$('#pBarBateria').removeClass().addClass('progress-bar success').css('width','100%');
+						$('#pBarBateria').removeClass().addClass('progress-bar success').css('width',bateria+'%');
 					}
 
 			});
@@ -132,7 +135,7 @@
 		$.ajax({
 			type:"GET",
 			//url:"http://localhost/workspace/eontziApp/app/getAllPos",	
-			url:"http://eontzia.zubirimanteoweb.com/app/getAllPos",
+			url:URL+"app/getAllPos",
 			dataType:"JSON",
 			data:"",
 			success:function(data){

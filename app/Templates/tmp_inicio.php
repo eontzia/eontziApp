@@ -54,13 +54,12 @@
 	
 	<!--Contenido-->
 	<div id="cont-fluid" class="container-fluid">
-		<div id="dispos" class="table-responsive col-xs-12 col-sm-3 col-md-3 col-lg-3">
+		<div id="dispos" class=" col-xs-12 col-sm-3 col-md-3 col-lg-3">
 			<!--Js/css Tabla-->
 				<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 				<script src="https://cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js"></script>
-				<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css">
-				
-			<table id="example" class="table table-striped table-bordered" cellspacing="0"  style="width:100%;text-align: center">
+				<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css">				
+			<table id="example" class="table table-striped table-responsive table-bordered" cellspacing="0"  style="width:100%;text-align: center">
 		        <thead>
 		            <tr>
 		                <th>TIPO</th>
