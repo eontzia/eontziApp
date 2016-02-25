@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 include_once 'BD/Conexion.php';
 include_once 'CorreoUser.php';
 require_once 'Utils.php';
@@ -68,7 +68,7 @@ require_once 'Utils.php';
 		//return $this->getIdUsuario();
 		$retVal=1;//0->KO / 1->OK / 2->Existe el usuario/3-> Usuario insertado correo KO
 		Utils::escribeLog("Inicio nuevoUsuario","debug");
-
+		$resCorreo=array();
 		try{
 			//Antes de insertar comprobar que no exista el mismo id_usuario y correo
 			$sql="SELECT id_usuario FROM usuario WHERE id_usuario=:id or email=:email";
@@ -122,9 +122,9 @@ require_once 'Utils.php';
 		Utils::escribeLog("Pre-envio correo","debug");
 		//Enviar correo
 		$CorreoUser=new CorreoUser();
-		$result=$CorreoUser->enviarCorreoRegistro($id,$nombre,$ape1,$ape2,$email,$key);
+		$resCorreo=$CorreoUser->enviarCorreoRegistro($id,$nombre,$ape1,$ape2,$email,$key);
 
-		if(!$result){
+		if($resCorreo['resultado']!=1){
 			//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Error al enviar correo]","debug");
 			$retVal=3;
 			return $retVal;
@@ -135,14 +135,18 @@ require_once 'Utils.php';
 
 	public static function validarUsuario($correo,$key){
 		$retVal=1;//0-> Fail , 1->OK, 2->Ya validado 
-		
+		$db=Conexion::getInstance()->getDb();
+		$resCorreo=array();
 		try{
 			//Comprobar que el usuario no este validado.
-			$sql="SELECT id_usuario,nombre, apellido1,apellido2,email,key_usuario,validado FROM usuario WHERE email LIKE :correo and key_usuario LIKE :key";
-			$comando=Conexion::getInstance()->getDb()->prepare($sql);
-			$comando->execute(array(":correo"=>$correo,":key"=>$key));
+			$sql="SELECT usu.Usuario_Id, trab.Nombre,trab.Apellido,trab.Activo,trab.Trabajador_Id
+				  FROM Usuarios usu JOIN Trabajadores trab 
+				  ON usu.Trabajador_Id=trab.Trabajador_Id
+				  WHERE trab.User_key like :key and trab.Email like :email";
+			$comando=$db->prepare($sql);
+			$comando->execute(array(":key"=>$key,":email"=>$correo));
 
-		}catch(PDOException $ex){
+		}catch(PDOException $e){
 			Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Error al buscar el usuario para validar]","debug");
 			$retVal=0;
 			return $retVal;
@@ -158,21 +162,23 @@ require_once 'Utils.php';
 		}
 		//comprobar el estado de validado
 		$result=$comando->fetch(PDO::FETCH_ASSOC);
-		$id_usuario=$result['id_usuario'];
-		$nombre=$result['nombre'];
-		$ape1=$result['apellido1'];
-		$ape2=$result['apellido2'];
-
-		if($result['validado']==='1'){
+		
+		//comprobar si el usuario ya está activo
+		if($result['Activo']==='1'){
 			Utils::escribeLog("Ya está validado","debug");
 			$retVal=2;
 			return $retVal;
 		}
+		//obtenemos las variables
+		$id_usuario=$result['Usuario_Id'];
+		$nombre=$result['Nombre'];
+		$ape1=$result['Apellido'];
+		$TrabId=$result['Trabajador_Id'];
 		//actualizar campo validado
 		try{
-			$sql="UPDATE usuario SET validado='1' WHERE id_usuario LIKE :id";
-			$comando=Conexion::getInstance()->getDb()->prepare($sql);
-			$comando->execute(array(':id'=>$id_usuario));
+			$sql="UPDATE Trabajadores SET Activo='1' WHERE Trabajador_Id LIKE :id";
+			$comando=$db->prepare($sql);
+			$comando->execute(array(':id'=>$TrabId));
 
 		}catch (PDOException $e){
 			$retVal=0;
@@ -190,9 +196,9 @@ require_once 'Utils.php';
 
 		//enviar correo de validado OK
 		$CorreoUser=new CorreoUser();
-		$result=$CorreoUser->enviarConfirmValidacion($nombre,$ape1,$ape2="",$correo);
+		$resCorreo=$CorreoUser->enviarConfirmValidacion($nombre,$ape1,$correo);
 
-		if(!$result){
+		if($resCorreo['resultado']!=1){
 			//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." [Error al enviar correo]","debug");
 			$retVal=3;
 			return $retVal;
@@ -203,23 +209,23 @@ require_once 'Utils.php';
 
 	public static function comprobarUsuario($idUsuario,$pass){
 		$retVal=1;
+		$bd=Conexion::getInstance()->getDb();
 		//Utils::escribeLog('inicio comprobar usuario','debug');
 
 		//comprobar en bd		
 		try{
-			$sql="SELECT usu.Usuario_Id, trab.Nombre, trab.Apellido
+			$sql="SELECT usu.Usuario_Id, trab.Nombre, trab.Apellido,trab.Cliente_Id,trab.Activo,trab.Profile_ImageURL
 				  FROM Usuarios AS usu
 				  JOIN Trabajadores AS trab ON usu.Trabajador_Id = trab.Trabajador_Id
 				  WHERE usu.Nombre_Usuario LIKE  :id
 				  AND usu.Password LIKE :pass";
-			$comando=Conexion::getInstance()->getDb()->prepare($sql);
-			$comando->execute(array(":id"=>$idUsuario,":pass"=>md5($pass)));
+			$comando=$bd->prepare($sql);
+			$comando->execute(array(":id"=>$idUsuario,":pass"=>$pass));
 
 		}catch(PDOException $e){
 			//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." ","debug");
 			$retVal=0;
 			return $retVal;
-
 		}
 
 		$cuenta=$comando->rowCount();
@@ -229,12 +235,47 @@ require_once 'Utils.php';
 		} 
 
 		$datos=$comando->fetch(PDO::FETCH_ASSOC);
-		
-		$_SESSION['id_usuario']=$datos['Usuario_Id'];
-		$_SESSION['nombre']=$datos['Nombre'];
-		$_SESSION['apellido']=$datos['Apellido'];
-		return $retVal;
-				
+		if($datos['Activo']==0){
+			$retVal=2;
+			return $retVal;
+		}else{
+			$_SESSION['id_usuario']=$datos['Usuario_Id'];
+			$_SESSION['nombre']=$datos['Nombre'];
+			$_SESSION['apellido']=$datos['Apellido'];
+			$_SESSION['nombrecompleto']=$datos['Nombre']." ".$datos['Apellido'];
+			$_SESSION['cliente_id']=$datos['Cliente_Id'];
+			$_SESSION['imgURL']=$datos['Profile_ImageURL'];
+			return $retVal;
+		}				
+	}
+
+	public static function getUsrData($idUsu){
+		$bd=Conexion::getInstance()->getDb();
+		$res=array();
+		try{
+			$sql="SELECT trab.Nombre, trab.Apellido,trab.Profile_ImageURL
+				  FROM Usuarios AS usu JOIN Trabajadores AS trab 
+				  ON usu.Trabajador_Id = trab.Trabajador_Id
+				  WHERE usu.Usuario_Id LIKE :id";
+			$comando=$bd->prepare($sql);
+			$comando->execute(array(":id"=>$idUsu));
+
+		}catch(PDOException $e){
+			//Utils::escribeLog("Error: ".$e->getMessage()." | Fichero: ".$e->getFile()." | Línea: ".$e->getLine()." ","debug");
+			$res['estado']=0;
+			$res['resultado']=$e->getMessage();
+			return $res;
+		}
+		$cuenta=$comando->rowCount();
+		if($cuenta==0){
+			$res['estado']=0;
+			$res['resultado']="Noo hay resultados de usuario";
+			return $res;
+		}else{
+			$res['estado']=1;
+			$res['resultado']=$comando->fetch(PDO::FETCH_ASSOC);
+			return $res;
+		}
 	}
 }
 ?>

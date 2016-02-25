@@ -7,7 +7,15 @@
 	var infoWindow = null;
 
 	//
-	function nuevoMarcadorBD(id,lat,lon,titulo,tipo,fecha,volumen,bateria,timeout){
+	function nuevoMarcadorBD(id,lat,lon,titulo,tipo,fecha,volumen,bateria,direccion,timeout){
+		var estadoBatera="";
+		if(bateria>0&&bateria<=25){
+			estadoBatera="La batería está cerca de agotarse.";
+		}else if(bateria>25&&bateria<55){
+			estadoBatera="Buena, carga media.";
+		}else{
+			estadoBatera="Muy buena, carga completa o casi completa.";
+		}
 		//quitarMarcadores(marcadores_bd);
 		var strImg="http://eontzia.zubirimanteoweb.com/app/Templates/img/Container/tipo_"+tipo+".png";		
 		var img={
@@ -31,10 +39,83 @@
 		//Añadir evento al marcador
 		marcador.addListener("click", function(){
 			
-			getStreet(lat,lon,id,fecha,volumen,bateria,marcador);
+			//getStreet(lat,lon,id,fecha,volumen,bateria,marcador);
+			var PBarVolumen='<div class="progress progreso">';
+				PBarVolumen+='<div id="pBarVolumen" class="progress-bar" role="progressbar" aria-valuenow="'+volumen+'" aria-valuemin="0" aria-valuemax="100" ';
+				PBarVolumen+='>';
+				PBarVolumen+='</div>';
+				PBarVolumen+='</div>';
+						
+			var PBarBateria='<div class="progress progreso">';
+				PBarBateria+='<div id="pBarBateria" class="progress-bar" role="progressbar" aria-valuenow="'+bateria+'" aria-valuemin="0" aria-valuemax="100" ';
+				PBarBateria+='>';
+				PBarBateria+='</div>';
+				PBarBateria+='</div>';
+
+			var content = '<div id="iw_container">' +
+              '<div class="iw_title"><p>Id: '+id+'</p></div>' +
+              '<div class="iw_content">'+
+              'Volumen: '+volumen+'% '+PBarVolumen+
+              'Estado de batería: '+estadoBatera+PBarBateria+
+              'Fecha de medición: '+fecha+'<br>'+
+              'Dirección: '+direccion+'</div>' +
+              '</div>';
+			if(!infoWindow){
+  				infoWindow=new google.maps.InfoWindow({map: mapa});
+  					infoWindow.setContent(content);
+			}else{
+				infoWindow.setContent(content);
+			}
+
+			infoWindow.open(mapa, marcador);
+
+			//cuando lo haya cargado en el dom
+			google.maps.event.addListener(infoWindow, 'domready', function() {
+				//VOLUMEN
+				if(volumen>85){
+						$('#pBarVolumen').removeClass().addClass('progress-bar danger').css('width',volumen+'%');
+					}else if(volumen>=55&&volumen<=85){
+						$('#pBarVolumen').removeClass().addClass('progress-bar warning').css('width',volumen+'%');
+					}else{
+						$('#pBarVolumen').removeClass().addClass('progress-bar success').css('width',volumen+'%');
+					}
+				
+					//BATERIA
+					if(bateria>0&&bateria<=25){
+						$('#pBarBateria').removeClass().addClass('progress-bar danger').css('width','10%');
+					}else if(bateria>25&&bateria<55){
+						$('#pBarBateria').removeClass().addClass('progress-bar warning').css('width','45%');
+					}else{
+						$('#pBarBateria').removeClass().addClass('progress-bar success').css('width','100%');
+					}
+
+			});
+			centrarEnMapa(marcador.id);			
 		});
 	}
 
+	function centrarEnMapa(id){
+		$.each(marcadores_bd, function(i,item){						
+			if(item.id==id){			
+				mapa.setCenter(item.position);
+				aplicarZoom(mapa,14,mapa.getZoom());
+				return false;
+			}			
+		});
+	}
+	// the smooth zoom function
+	function aplicarZoom (map, max, cnt) {
+	    if (cnt >= max) {
+	            return;
+	        }
+	    else {
+	        z = google.maps.event.addListener(map, 'zoom_changed', function(event){
+	            google.maps.event.removeListener(z);
+	            aplicarZoom(map, max, cnt + 1);
+	        });
+	        setTimeout(function(){map.setZoom(cnt)}, 80); // 80ms is what I found to work well on my system -- it might not work well on all systems
+	    }
+	}
 	
 	//Borrar marcadores nuevos o bd
 	function quitarMarcadores(marcadores){
@@ -44,97 +125,6 @@
 			}
 			marcadores=[];
 		}		
-	}
-
-/*
-	function getStreet(lat,lon){
-		$.ajax({
-			tipe:"GET",
-			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&location_type=GEOMETRIC_CENTER&key=AIzaSyDD3NDLaalLek6GbFmNwipfqxJeuJeUrG4",
-			dataType:"JSON",
-			data:"",
-			success:function(data){
-				console.log(data);
-				if(data.status=="OK"){
-					while($('#contenidoIW').size()==0){}
-					$('#contenidoIW').html('Dirección: '+data.results[0].formatted_address);
-				}
-			}
-		});
-	}
-	*/
-function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
-		$.ajax({
-			tipe:"GET",
-			url:"https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&location_type=GEOMETRIC_CENTER&key=",
-			dataType:"JSON",
-			data:"",
-			success:function(data){
-				console.log(data);
-				if(data.status=="OK"){
-					//while($('#contenidoIW').size()==0){}
-					//$('#contenidoIW').html('Dirección: '+data.results[0].formatted_address);
-					var colores=['red','green','orange'];
-					var PBarVolumen='<div class="progress" style="width:150px;height:12px">';
-  						PBarVolumen+='<div class="progress-bar" role="progressbar" aria-valuenow="'+volumen+'" aria-valuemin="0" aria-valuemax="100" ';
-  						if(volumen>85){
-  							PBarVolumen+='style="width:'+volumen+'%;background-color:'+colores[1]+'">';
-  						}else if(volumen>=55&&volumen<=85){
-  							PBarVolumen+='style="width:'+volumen+'%;background-color:'+colores[2]+'">';
-  						}else{
-  							PBarVolumen+='style="width:'+volumen+'%;background-color:'+colores[0]+'">';
-  						}
-
-    					PBarVolumen+='<span class="sr-only">'+volumen+'% Complete</span>';
-  						PBarVolumen+='</div>';
-						PBarVolumen+='</div>';
-
-					var PBarBateria='<div class="progress" style="width:150px;height:12px">';
-  						PBarBateria+='<div class="progress-bar" role="progressbar" aria-valuenow="'+bateria+'" aria-valuemin="0" aria-valuemax="100" ';
-  						if(bateria>=0&&bateria<=15){
-  							PBarBateria+='style="width:'+bateria+'%;background-color:'+colores[0]+'">';
-  						}else if(bateria>15&&bateria<45){
-  							PBarBateria+='style="width:'+bateria+'%;background-color:'+colores[2]+'">';
-  						}else{
-  							PBarBateria+='style="width:'+bateria+'%;background-color:'+colores[1]+'">';
-  						}
-
-    					PBarBateria+='<span class="sr-only">'+bateria+'% Complete</span>';
-  						PBarBateria+='</div>';
-						PBarBateria+='</div>';
-
-					var content = '<div id="iw_container">' +
-		              '<div class="iw_title"><p>Id: '+id+'</p></div>' +
-		              '<div class="iw_content"><p id="contenidoIW">'+
-		              'Volumen: '+volumen+'% '+PBarVolumen+
-		              'Batería: '+bateria+'% '+PBarBateria+
-		              'Fecha de medición: '+fecha+'<br>'+
-		              'Dirección: '+data.results[0].formatted_address+'</p></div>' +
-		              '</div>';
-					if(!infoWindow){
-		  				infoWindow=new google.maps.InfoWindow({map: mapa});
-		  				infoWindow.setContent(content);
-						//getStreet(lat,lon);
-					}else{
-						infoWindow.setContent(content);
-						//getStreet(lat,lon);
-					}			
-					infoWindow.open(mapa, marcador);
-					//getStreet(lat,lon);
-					$.each(marcadores_bd, function(i,item){
-						//if(marcador.id=='2'){
-							if(item.id==marcador.id){
-							//alert(item.id+";"+item.tipo+";"+item.title);
-							mapa.setCenter(marcador.position);
-							return false;
-							}	
-						//}
-										
-					});
-
-				}
-			}
-		});
 	}
 
 	//Funcion para traer los puntos insertados en bd
@@ -149,7 +139,7 @@ function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
 				console.log(data);
 				if(data.estado=="OK"){
 					$.each(data.mensaje,function(i,item){
-						nuevoMarcadorBD(item.Dispositivo_Id,item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,item.Fecha,item.Volumen,item.Bateria,i*150);
+						nuevoMarcadorBD(item.Dispositivo_Id,item.Latitud,item.Longitud,"Contenedor "+i,item.Tipo,item.Fecha,item.Volumen,item.Bateria,item.Direccion,i*150);
 					})
 				}
 			},
@@ -167,23 +157,23 @@ function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
 
 	function getLocalizacion(){
 		navigator.geolocation.getCurrentPosition(function(position) {
-				var pos = {
-					lat: position.coords.latitude,
-					lng: position.coords.longitude
-      			};
+			var pos = {
+				lat: position.coords.latitude,
+				lng: position.coords.longitude
+  			};
 
-      			if(!infoWindow){
-      				infoWindow=new google.maps.InfoWindow({map: mapa});
-      			}
-      			
-				infoWindow.setPosition(pos);
-				infoWindow.setContent('Posición actual (aproximada)');
-				mapa.setCenter(pos);
-			}, 
-			function() {
-      			handleLocationError(true, infoWindow, map.getCenter());
-      			geoActivado=false;
-    		});
+			if(!infoWindow){
+				infoWindow=new google.maps.InfoWindow({map: mapa});
+			}
+			
+			infoWindow.setPosition(pos);
+			infoWindow.setContent('Posición actual (aproximada)');
+			mapa.setCenter(pos);
+		}, 
+		function() {
+				//handleLocationError(true, infoWindow, map.getCenter());
+				geoActivado=false;
+		});
 	}
 
 	function newRuta(){		
@@ -202,61 +192,61 @@ function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
 		mapa = new google.maps.Map($('#mapa')[0],config);
 		
 		//SearchBox
-			// Create the search box and link it to the UI element.
-			var input = $('#pac-input')[0];
-			var searchBox = new google.maps.places.SearchBox(input);		
-			mapa.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+		// Create the search box and link it to the UI element.
+		var input = $('#pac-input')[0];
+		var searchBox = new google.maps.places.SearchBox(input);		
+		mapa.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-			// Bias the SearchBox results towards current map's viewport.
-				mapa.addListener('bounds_changed', function() {
-					searchBox.setBounds(mapa.getBounds());
-				});
-				var markers = [];
+		// Bias the SearchBox results towards current map's viewport.
+		mapa.addListener('bounds_changed', function() {
+			searchBox.setBounds(mapa.getBounds());
+		});
+		var markers = [];
 		// [START region_getplaces]
 		// Listen for the event fired when the user selects a prediction and retrieve
 		// more details for that place.
-		  searchBox.addListener('places_changed', function() {
-		    var places = searchBox.getPlaces();
+		searchBox.addListener('places_changed', function() {
+			var places = searchBox.getPlaces();
 
-		    if (places.length == 0) {
-		      return;
-		    }
+			if (places.length == 0) {
+				return;
+			}
 
-		    // Clear out the old markers.
+			// Clear out the old markers.
 			markers.forEach(function(marker) {
-		      marker.setMap(null);
-		    });
-		    markers = [];
+				marker.setMap(null);
+			});
+			markers = [];
 
-		    // For each place, get the icon, name and location.
-		    var bounds = new google.maps.LatLngBounds();
-		    places.forEach(function(place) {
-		      var icon = {
-		        url: place.icon,
-		        size: new google.maps.Size(71, 71),
-		        origin: new google.maps.Point(0, 0),
-		        anchor: new google.maps.Point(17, 34),
-		        scaledSize: new google.maps.Size(25, 25)
-		      };
+			// For each place, get the icon, name and location.
+			var bounds = new google.maps.LatLngBounds();
+			places.forEach(function(place) {
+				var icon = {
+					url: place.icon,
+					size: new google.maps.Size(71, 71),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(17, 34),
+					scaledSize: new google.maps.Size(25, 25)
+				};
 
-		      // Create a marker for each place.
-		      markers.push(new google.maps.Marker({
-		        map: mapa,
-		        icon: icon,
-		        title: place.name,
-		        position: place.geometry.location
-		      }));
+				// Create a marker for each place.
+				markers.push(new google.maps.Marker({
+					map: mapa,
+					icon: icon,
+					title: place.name,
+					position: place.geometry.location
+				}));
 
-		      if (place.geometry.viewport) {
-		        // Only geocodes have viewport.
-		        bounds.union(place.geometry.viewport);
-		      } else {
-		        bounds.extend(place.geometry.location);
-		      }
-		    });
-		    mapa.fitBounds(bounds);
-		  });
-		  // [END region_getplaces]
+				if (place.geometry.viewport) {
+					// Only geocodes have viewport.
+					bounds.union(place.geometry.viewport);
+				} else {
+					bounds.extend(place.geometry.location);
+				}
+			});
+			mapa.fitBounds(bounds);
+		});
+		// [END region_getplaces]
 		
 		if(geoActivado){
 			getLocalizacion();
@@ -273,14 +263,6 @@ function getStreet(lat,lon,id,fecha,volumen,bateria,marcador){
 		
 		getPosiciones();
 		
-		$("#iniRuta").click(function(){
-			if(enRuta){
-				enRuta=false;
-			}else{
-				newRuta();
-			}
-						
-		});
 	}
 
 	

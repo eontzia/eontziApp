@@ -57,6 +57,7 @@ require_once 'mysql_login.php';
 
             return self::$pdo;
         }
+        
 
         /**
          * Evita la clonación del objeto

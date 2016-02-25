@@ -9,32 +9,75 @@
 	<link rel="shortcut icon" href="../img/favicon.ico"/>
 	<meta http-equiv="Content-Type" content="text/html"; charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0">
-	<script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			$('#txtLogIdUsuario').focus();		
+			var verpass=false;
+			$('#txtLogIdUsuario').focus();
+			$('#verPass').mousedown(function(){
+				if(!verpass){
+					$('#txtLogPass').attr('type','text');
+					$('#txtLogPass').focus();
+					verpass=true;
+				}
+			});
+			$('#verPass').mouseup(function(){
+				if(verpass){
+					$('#txtLogPass').attr('type','password');
+					$('#txtLogPass').focus();
+					verpass=false;
+				}
+			});						
 		});
 	</script>
+	<!--Fuentes -->
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Cabin+Condensed" />
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans" />
 </head>
 <body>		
-	<nav id="cabecera" class="navbar navbar-default">
+	<nav id="cabecera" class="navbar navbar-default navbar-fixed-top">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">								
-				<a id="titulo" href="http://eontzia.zubirimanteoweb.com/">
-					<img class="logo" src="../img/logo_sin.png">
-					<span class="site-name">E-ontziApp</span>
-					<span class="site-desc">Web de E-ontzia.</span>
+			<div class="navbar-header">
+				<button type="button" id="hamburger_cabecera" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false" style="background-color: #2A4C3B;">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button> 								
+				<a id="titulo" href="http://eontzia.zubirimanteoweb.com/">				
+					<div>
+						<img class="logo" src="../img/logo_sin.png">
+						<span class="site-name" >eOntziApp</span>
+					</div>					
 				</a>
 			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
+				<ul class="nav navbar-nav navbar-right" >
+					<li >
+						<a href="index.html">Home</a>
+					</li> 
+					<li >
+						<a href="info.html">Información</a>
+					</li> 
+					<li>
+						<a href="info.html#formreg" >Registro</a></li> 
+					<li >
+						<a href="app/demo" target="_blank">Demo</a>
+					</li>
+					<li >
+						<a href="app/logout">Login</a>
+					</li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
   		</div><!-- /.container-fluid -->
 	</nav>
 	<main>
 		<section>
 			<div id="container">
 			<?php if(isset($flash['message'])):?>
-				<div class="alert alert-warning alert-dismissible" role="alert">
+				<div class="alert alert-warning fade in" role="alert">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<strong>Atenci&oacute;n!</strong> <?php echo $flash['message']?>
 				</div>
@@ -62,15 +105,7 @@
 									</div>								
 								</div>
 							</div>						
-							<div class="form-group">
-								<div class="col-sm-offset-0 col-sm-10">
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" tabindex="3"> Recu&eacute;rdame
-										</label>
-									</div>
-								</div>
-							</div>
+							
 							<div class="form-group">
 								<div class="col-sm-2 col-sm-10">
 									<button class="btn btn-primary" type="submit"  tabindex="4">Iniciar sesión</button>

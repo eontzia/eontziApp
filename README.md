@@ -52,7 +52,3 @@ Templates/tmp_perfil.php  | Contiene Plantilla de perfil.
 Templates/css | Ubicación de los css.
 Templates/images | Ubicación de los images.
 Templates/js | Ubicación de los archivos js.
-
-
-
-

@@ -1,5 +1,5 @@
 <?php
-
+header('Content-Type: text/html; charset=utf-8');
 	class Utils{
 
 		public static function random_string($length) {
@@ -17,6 +17,16 @@
 			$arch = fopen(realpath( '.' )."/log/log_".date('Y-m-d').".txt", "a+");
 			fwrite($arch, "[ Fecha:".date('Y-m-d H:i:s')." | Nav: ".$_SERVER['HTTP_USER_AGENT']." | IP: ".$_SERVER['REMOTE_ADDR']." | FILE: ".$_SERVER['PHP_SELF']." | Tipo: ". $tipo ."] Msg: ".$cadena ."\r\n");
 			fclose($arch);
+		}
+
+		public static function get_file_contentURL($url){
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_URL, $url);
+			$result = curl_exec($ch);
+			curl_close($ch);
+			return $result;
 		}
 
 		
